@@ -24,19 +24,10 @@ Framework7.use(Framework7Vue)
 const app = new Vue({
   el: '#app',
   template: '<app/>',
-
-  // Register App Component
   components: {
     app: App
   },
   methods: {
-    // initCordova: function () {
-    //   document.addEventListener('backbutton', this.goBack, false);
-    // },
-    // goBack: function () {
-    //   alert('Botón atrás')
-    // }
+    
   }
 });
-
-// document.addEventListener('deviceready', app.initCordova);

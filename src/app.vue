@@ -58,31 +58,46 @@ import routes from "./routes.js";
 
 export default {
   mounted() {
-    var app = this.$f7;
-    var $$ = this.$$;
+    document.addEventListener("deviceready", this.initCordova);
+    this.$f7ready(f7 => {
+      this.app = this.$f7;
+      this.$$ = this.$$;
+    });
+  },
+  methods: {
+    initCordova: function() {
+      document.addEventListener("backbutton", this.goBack, false);
+    },
+    goBack: function() {
+      var app = this.app,
+        $$ = this.$$,
+        leftp = app.panel.left && app.panel.left.opened,
+        rightp = app.panel.right && app.panel.right.opened;
 
-    console.log(app.panel.left.opened);
-    document.addEventListener(
-      "backbutton",
-      function() {
-        var leftp = app.panel.left && app.panel.left.opened,
-          rightp = app.panel.right && app.panel.right.opened;
-
-        console.log(leftp);
-        console.log(rightp);
-      },
-      false
-    );
-  },  
+      if (leftp || rightp) {
+        app.panel.close();
+        return false;
+      } else if ($$(".modal-in").length > 0) {
+        app.dialog.close();
+        app.popup.close();
+        return false;
+      } else if (app.views.main.router.url == "/") {
+        navigator.app.exitApp();
+      } else {
+        app.views.main.router.back();
+        return false;
+      }
+    }
+  },
   data() {
     return {
-      app = null,
-      // Framework7 parameters here      
+      app: null,
+      $$: null,
+      router: null,
       f7params: {
         id: "io.framework7.testapp", // App bundle ID
         name: "Framework7", // App name
         theme: "auto", // Automatic theme detection
-        // App routes
         routes: routes,
         panel: {
           swipe: "left"
@@ -92,6 +107,4 @@ export default {
     };
   }
 };
-
-document.addEventListener("deviceready", app.initCordova);
 </script>
